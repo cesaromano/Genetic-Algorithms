@@ -22,7 +22,7 @@ class Encoder:
         """convert a binary sequence to gray code sequence"""
 
         if len(gray) == 1:
-            return gray
+            return '000000' + gray
         
         #first bin of the new sequence is the same bin
         binl = []
@@ -39,6 +39,10 @@ class Encoder:
             binl.append(result2)
             result = result2
 
+        if len(binl) < 7:
+            for x in range(0, 7-len(binl)):
+                binl.insert(0, '0')
+
         #parse list to string
         listToBinStr = ''.join(binl)
 
@@ -48,7 +52,7 @@ class Encoder:
         """convert a gray code sequence to binary sequence"""
 
         if len(bin) == 1:
-            return bin
+            return '000000' + bin
 
         #first bin of the new sequence is the same bin
         binl = []
@@ -60,6 +64,10 @@ class Encoder:
             j = i+1
             result = Encoder.binAdd(self, bin[i], bin[j])
             binl.append(result)
+
+        if len(binl) < 7:
+            for x in range(0, 7-len(binl)):
+                binl.insert(0, '0')
 
         #parse list to string
         listToGrayStr = ''.join(binl)

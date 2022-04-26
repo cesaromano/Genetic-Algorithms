@@ -1,24 +1,35 @@
 from encoder import Encoder
+from random import randint
+import numpy as np
+from GeneticAlgorithm import *
 
 test1 = Encoder()
 
-#print(int(test1.grayToBin(str(1000)), 2))
+"""
+#Initialize population
+p = np.array([[Encoder().binToGray(format(randint(0, 101), 'b'))] for x in range(0, 10)])
+#e = np.array([[GeneticAlgorithm().evalFunc(p[int(x),0])] for x in range(0, 10)])
 
-#print(test1.grayToBin(bin))
+for x in range(0, 10):
 
-#print(test1.binToGray(bin))
+    val = [GeneticAlgorithm().evalFunc(p[int(x),0])]
+    print(val)
+    np.append(val, p[int(x), 0])
+    #print(GeneticAlgorithm().evalFunc(p[int(x),0]))
 
-bins = [format(x, "b") for x in range(0, 16)]
-grays = []
-decimal = []
+print(p)
+#print(e)
+"""
+#Initialize a random population of ten individuals
+p = [[Encoder().binToGray(format(randint(0, 101), 'b'))] for x in range(0, 10)]
 
-for each in range(0, len(bins)):
-    bintogray = test1.binToGray(bins[each])
-    print(bintogray)
-    grays.append(bintogray)
+#evaluates each individual aptitude and append their result
+for x in range(0, 10):
 
-for each in range(0, len(grays)):
-    graytobin = test1.grayToBin(grays[each])
-    print(graytobin)
-    bintodecimal = int(graytobin, 2)/100
-    print(bintodecimal)
+    val = GeneticAlgorithm().evalFunc(p[x][0])
+    #print(val)
+    p[x].append(val)
+
+#space ranking aptitude
+
+print(p)
