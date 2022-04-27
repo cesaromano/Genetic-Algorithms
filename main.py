@@ -1,35 +1,40 @@
 from encoder import Encoder
-from random import randint
+import random
 import numpy as np
 from GeneticAlgorithm import *
 
-test1 = Encoder()
+#Initialize a non repeated random population of ten individuals, index0:cromossome
 
-"""
-#Initialize population
-p = np.array([[Encoder().binToGray(format(randint(0, 101), 'b'))] for x in range(0, 10)])
-#e = np.array([[GeneticAlgorithm().evalFunc(p[int(x),0])] for x in range(0, 10)])
+ga = GeneticAlgorithm()
 
-for x in range(0, 10):
+p = ga.randPopulation()
 
-    val = [GeneticAlgorithm().evalFunc(p[int(x),0])]
-    print(val)
-    np.append(val, p[int(x), 0])
-    #print(GeneticAlgorithm().evalFunc(p[int(x),0]))
+t = 1
 
-print(p)
-#print(e)
-"""
-#Initialize a random population of ten individuals
-p = [[Encoder().binToGray(format(randint(0, 101), 'b'))] for x in range(0, 10)]
+#while t < len(p):
 
-#evaluates each individual aptitude and append their result
-for x in range(0, 10):
+#append fitness value to p, index1: fitness
+p = ga.fitness(p)
 
-    val = GeneticAlgorithm().evalFunc(p[x][0])
-    #print(val)
-    p[x].append(val)
+#append ranking and linear ranking values to p, index2: rank, index3: linRank
+p = ga.linRank(p)
 
-#space ranking aptitude
 
-print(p)
+
+#Tournament selection
+rn = 3
+pInter = []
+
+for x in range(len(p)):
+    rInd = random.sample(range(0, 10), rn)
+    best = [p[rInd[x]][3] for x in range(len(rInd))]
+    i = best.index(max(best))
+    pInter.append(p[rInd[i]])
+
+print(rInd)
+print(pInter)
+print(best, i)
+
+
+
+#   t += 1
