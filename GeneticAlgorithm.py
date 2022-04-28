@@ -1,6 +1,6 @@
 
 import math
-from random import randint
+import random
 from encoder import Encoder
 
 class GeneticAlgorithm:
@@ -17,7 +17,7 @@ class GeneticAlgorithm:
         t = 0
         #c = 0
         while t < self.n:
-            randVal = randint(0, 100)
+            randVal = random.randint(0, 100)
             if randVal in aux:
                 #c+=1
                 pass
@@ -48,6 +48,50 @@ class GeneticAlgorithm:
             p[x].append(lr[fv.index(val)])
 
         return p
+
+    def tournSelec(self, p, rn=3):
+
+        pInter = []
+
+        for x in range(len(p)):
+            rInd = random.sample(range(0, 10), rn)
+            best = [p[rInd[x]][3] for x in range(len(rInd))]
+            i = best.index(max(best))
+            pInter.append(p[rInd[i]])
+
+        return pInter
+
+    def crossover(self, pInter, pc=0.6):
+
+        rPairs = [round(random.random(), 1) for x in range(int(len(pInter)/2))]
+        crossPoint = random.sample(range(1, 6), 5)
+
+        #print(f"pInter bef: {pInter}")
+
+        #print(rPairs)
+        #print(crossPoint)
+
+        for x in range(int(len(pInter)/2)):
+            
+            if rPairs[x] <= pc:
+                
+                p1 = x*2
+                p2 = (x*2)+1
+                
+                cromossome1 = pInter[p1][0]
+                cromossome2 = pInter[p2][0]
+                #print(cromossome1, cromossome2)
+                 
+                cromoSlice1 = cromossome1[crossPoint[x]:]
+                cromoSlice2 = cromossome2[crossPoint[x]:]
+                #print(cromoSlice1, cromoSlice2)
+                 
+                pInter[p1][0] = cromossome1.replace(cromossome1[crossPoint[x]:], cromoSlice2, 1)
+                pInter[p2][0] = cromossome2.replace(cromossome2[crossPoint[x]:], cromoSlice1, 1)
+
+        print(f"pInter aft: {pInter}")
+
+        return pInter
 
     def evalFunc(self, x):
         """Evaluates the function"""

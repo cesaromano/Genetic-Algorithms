@@ -1,3 +1,4 @@
+#from re import X
 from encoder import Encoder
 import random
 import numpy as np
@@ -21,20 +22,17 @@ p = ga.linRank(p)
 
 
 
-#Tournament selection
+#Tournament selection, rn: number of random individuals per tournament
 rn = 3
-pInter = []
 
-for x in range(len(p)):
-    rInd = random.sample(range(0, 10), rn)
-    best = [p[rInd[x]][3] for x in range(len(rInd))]
-    i = best.index(max(best))
-    pInter.append(p[rInd[i]])
+pInter = ga.tournSelec(p)
 
-print(rInd)
 print(pInter)
-print(best, i)
 
+#crossover
 
+#probability crossover
 
-#   t += 1
+ga.crossover(pInter)
+print(pInter)
+
