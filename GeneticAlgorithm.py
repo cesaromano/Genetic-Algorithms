@@ -22,7 +22,7 @@ class GeneticAlgorithm:
                 #c+=1
                 pass
             else:
-                p.append([Encoder().binToGray(format((randVal), 'b'))])
+                p.append([Encoder().binToGray(format((randVal), 'b')), 0, 0, 0])
                 aux.append(randVal)
                 t+=1
 
@@ -31,7 +31,7 @@ class GeneticAlgorithm:
     def fitness(self, p):
 
         for x in range(0, len(p)):
-            p[x].append(GeneticAlgorithm().evalFunc(p[x][0]))
+            p[x][1] = GeneticAlgorithm().evalFunc(p[x][0])
 
         return p
 
@@ -44,8 +44,8 @@ class GeneticAlgorithm:
 
         for x in range(0, len(p)):
             val = i[x]
-            p[x].append(fv.index(val))
-            p[x].append(lr[fv.index(val)])
+            p[x][2] = fv.index(val)
+            p[x][3] = lr[fv.index(val)]
 
         return p
 
@@ -89,7 +89,40 @@ class GeneticAlgorithm:
                 pInter[p1][0] = cromossome1.replace(cromossome1[crossPoint[x]:], cromoSlice2, 1)
                 pInter[p2][0] = cromossome2.replace(cromossome2[crossPoint[x]:], cromoSlice1, 1)
 
-        print(f"pInter aft: {pInter}")
+        #print(f"pInter aft: {pInter}")
+
+        return pInter
+
+    def mutByte(self, chromosome, rVal, pm):
+        
+        lVal = []
+        
+        for x in range(7):
+                                             
+            if rVal[x] <= pm:
+                
+                lChrom = list(chromosome)
+                lChrom[x] = str((int(chromosome[x])-1)**2)
+                chromosome = ''.join(lChrom)
+                #lVal.append(rVal[x])
+                
+                return chromosome
+
+    def mutate(self, pInter, pm=0.02):
+
+        for x in range(len(pInter)):
+            rVal = [round(random.random(), 2) for x in range(7)]
+            chromosome = pInter[x][0]
+            #print(chromosome)
+            # #print(rVal)
+            
+            mutByte1 = GeneticAlgorithm().mutByte(chromosome, rVal, pm)
+            
+            #print(mutByte1)
+             
+            if (mutByte1 is not None):
+                pInter[x][0] = mutByte1
+                #print(pInter[x][0])
 
         return pInter
 

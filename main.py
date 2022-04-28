@@ -9,6 +9,7 @@ from GeneticAlgorithm import *
 ga = GeneticAlgorithm()
 
 p = ga.randPopulation()
+#print(p)
 
 t = 1
 
@@ -16,10 +17,11 @@ t = 1
 
 #append fitness value to p, index1: fitness
 p = ga.fitness(p)
+#print(p)
 
 #append ranking and linear ranking values to p, index2: rank, index3: linRank
 p = ga.linRank(p)
-
+#print(p)
 
 
 #Tournament selection, rn: number of random individuals per tournament
@@ -27,12 +29,18 @@ rn = 3
 
 pInter = ga.tournSelec(p)
 
-print(pInter)
+#print(pInter)
 
 #crossover
 
 #probability crossover
 
 ga.crossover(pInter)
-print(pInter)
+#print(pInter)
 
+#mutation
+
+pm =0.02
+
+ga.mutate(pInter)
+print(pInter)
