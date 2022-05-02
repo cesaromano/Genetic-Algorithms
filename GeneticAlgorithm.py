@@ -1,13 +1,18 @@
 
+import matplotlib.pyplot as plt
 import math
 import random
 from encoder import Encoder
+import numpy as np
 
 class GeneticAlgorithm:
     """Contains most of the methods that drive the main
     algorithm"""
 
-    def __init__(self, n=10):
+    def __init__(self, n=10, i=0.0, f=1.0, p=0.001):
+        self.i = i
+        self.f = f
+        self.p = p
         self.n = n
 
     def randPopulation(self):
@@ -31,12 +36,13 @@ class GeneticAlgorithm:
     def fitness(self, p):
 
         for x in range(0, len(p)):
-            p[x][1] = GeneticAlgorithm().evalFunc(p[x][0])
+            p[x][1] = GeneticAlgorithm().evalFuncy(p[x][0])
 
         return p
 
     def linRank(self, p):
 
+        #fitness values list
         fv = [p[x][1] for x in range(0, len(p))]
         i = fv[:]
         fv = sorted(fv)
@@ -54,7 +60,9 @@ class GeneticAlgorithm:
         pInter = []
 
         for x in range(len(p)):
+            #three random individuals are taken
             rInd = random.sample(range(0, 10), rn)
+            #
             best = [p[rInd[x]][3] for x in range(len(rInd))]
             i = best.index(max(best))
             pInter.append(p[rInd[i]])
@@ -64,7 +72,8 @@ class GeneticAlgorithm:
     def crossover(self, pInter, pc=0.6):
 
         rPairs = [round(random.random(), 1) for x in range(int(len(pInter)/2))]
-        crossPoint = random.sample(range(1, 6), 5)
+        crossPoint = [random.randint(1, 6) for x in range(int(len(pInter)/2))]
+        #crossPoint = random.sample(range(1, 6), int(len(pInter)/2))
 
         #print(f"pInter bef: {pInter}")
 
@@ -131,6 +140,44 @@ class GeneticAlgorithm:
 
         x = int(Encoder().grayToBin(x), 2)/100
 
-        g = (2**(-2*((x-0.1)/0.9)**2))*(math.sin(5*math.pi*x))**6
+        y = (2**(-2*((x-0.1)/0.9)**2))*(math.sin(5*math.pi*x))**6
 
         return x
+
+    def evalFuncy(self, x):
+        """Evaluates the function"""
+
+        if type(x) == str:
+            
+            x = int(Encoder().grayToBin(x), 2)/100
+
+        y = round((2**(-2*((x-0.1)/0.9)**2))*(math.sin(5*math.pi*x))**6, 2)
+
+        return y
+
+    def funct(self):
+        """Return 'ax', a the subplot function in the figure"""
+        
+        values = []
+        points = []
+        
+        for each in np.arange(self.i, self.f, self.p):
+            test = GeneticAlgorithm().evalFuncy(each)
+            values.append(test)
+            
+        for each in np.arange(self.i, self.f, self.p):
+            points.append(each)
+            
+        fig, ax = plt.subplots()
+        ax.plot(points, values)
+        ax.axis([0, 1.1, 0, 1.1])
+        
+        return ax
+
+    def addPointPlot(self, px, py):
+        """Return 'ax', a subplot with the function and a especific points"""
+        
+        ax = GeneticAlgorithm().funct()
+        ax.scatter(px, py, s=50)
+        
+        return ax
