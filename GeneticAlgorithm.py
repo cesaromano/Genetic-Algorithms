@@ -35,14 +35,23 @@ class GeneticAlgorithm:
 
     def fitness(self, p):
 
-        for x in range(0, len(p)):
+        for x in range(len(p)):
             p[x][1] = GeneticAlgorithm().evalFuncy(p[x][0])
 
         return p
 
+    def best(self, p):
+
+        best = [p[ind][1] for ind in range(len(p))]
+        b = max(best)
+        i = best.index(b)
+        bChromosome = p[i]
+
+        return bChromosome
+
     def linRank(self, p):
 
-        #fitness values list
+        #fitness values listed
         fv = [p[x][1] for x in range(0, len(p))]
         i = fv[:]
         fv = sorted(fv)
@@ -54,6 +63,20 @@ class GeneticAlgorithm:
             p[x][3] = lr[fv.index(val)]
 
         return p
+
+    def rouleteWheelSel(self, p):
+
+        #population fitness
+        popFit = sum([p[ind][1] for ind in range(len(p))])
+        #each chromossome probability
+        indProbability = [p[ind][1]/popFit for ind in range(len(p))]
+        aux = [x for x in range(len(p))]
+
+        indSelected = [np.random.choice(aux, p=indProbability) for ind in range(len(p))]
+
+        pInter = [p[indSelected[x]] for x in range(len(p))]
+
+        return pInter
 
     def tournSelec(self, p, rn=3):
 
