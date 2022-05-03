@@ -10,23 +10,32 @@ class GeneticAlgorithm:
     algorithm"""
 
     def __init__(self, n=10, i=0.0, f=1.0, p=0.001):
+        """
+        n: number of individuals
+		i: range lower limit
+		f: range upper limit
+		p: range step
+		"""
         self.i = i
         self.f = f
         self.p = p
         self.n = n
 
     def randPopulation(self):
+        """Creates a population, a list of ten
+        lists of individuals, each individual chromosome is
+        stored in the index 0"""
 
         p = []
         aux = []
         t = 0
-        #c = 0
+
         while t < self.n:
             randVal = random.randint(0, 100)
             if randVal in aux:
-                #c+=1
                 pass
             else:
+                #Append a gray binary value if it isn't repeated
                 p.append([Encoder().binToGray(format((randVal), 'b')), 0, 0, 0])
                 aux.append(randVal)
                 t+=1
@@ -34,173 +43,170 @@ class GeneticAlgorithm:
         return p
 
     def fitness(self, p):
+        """Evaluates each individual in population"""
 
         for x in range(len(p)):
-            p[x][1] = GeneticAlgorithm().evalFuncy(p[x][0])
+            #the value is stored in the index 1
+            p[x][1] = GeneticAlgorithm().evalFunc(p[x][0])
 
         return p
 
     def best(self, p):
+        """Get the best chromosome of the population"""
 
-        best = [p[ind][1] for ind in range(len(p))]
-        b = max(best)
-        i = best.index(b)
-        bChromosome = p[i]
+        #list of individuals evaluations
+        fv = [p[eval][1] for eval in range(len(p))]
+        #best individual evaluation
+        best = max(fv)
+        i = fv.index(best)
+        #getting chromosome
+        bChromosome = p[i][0]
 
         return bChromosome
 
     def linRank(self, p):
+        """generates each individual linear ranking"""
 
-        #fitness values listed
-        fv = [p[x][1] for x in range(0, len(p))]
+        #list of individuals evaluations
+        fv = [p[eval][1] for eval in range(len(p))]
         i = fv[:]
         fv = sorted(fv)
-        lr = [round((2*x)/(len(p)*(len(p)-1)), 5) for x in range(0, len(p))]
+        #list of linear rankings based on the number of individuals
+        lr = [round((2*x)/(len(p)*(len(p)-1)), 5) for x in range(len(p))]
 
         for x in range(0, len(p)):
             val = i[x]
+            #adding the ranking value to index 2
             p[x][2] = fv.index(val)
+            #adding the linear ranking value to index 3
             p[x][3] = lr[fv.index(val)]
 
         return p
 
     def rouleteWheelSel(self, p):
+        """roulete wheel selection method"""
 
-        #population fitness
-        popFit = sum([p[ind][1] for ind in range(len(p))])
-        #each chromossome probability
-        indProbability = [p[ind][1]/popFit for ind in range(len(p))]
+        #list of individuals evaluations
+        fv = [p[eval][1] for eval in range(len(p))]
+        #getting the sum of all elemnts in fv
+        fv = sum(fv)
+        #getting each chromossome probability
+        indProbability = [p[ind][1]/fv for ind in range(len(p))]
         aux = [x for x in range(len(p))]
-
+        #getting the index of individuals selected
         indSelected = [np.random.choice(aux, p=indProbability) for ind in range(len(p))]
+        #individuals selected added to a new population list
+        aux = [p[indSelected[x]] for x in range(len(p))]
 
-        pInter = [p[indSelected[x]] for x in range(len(p))]
-
-        return pInter
+        return aux
 
     def tournSelec(self, p, rn=3):
+        """tournament selection method"""
 
-        pInter = []
+        aux = []
 
         for x in range(len(p)):
-            #three random individuals are taken
+            #three random int samples are generated
             rInd = random.sample(range(0, 10), rn)
-            #
+            #getting 3 random individuals based on the rInd index numbers
             best = [p[rInd[x]][3] for x in range(len(rInd))]
+            #getting the best index individual based on the mas value
             i = best.index(max(best))
-            pInter.append(p[rInd[i]])
 
-        return pInter
+            aux.append(p[rInd[i]])
 
-    def crossover(self, pInter, pc=0.6):
+        return aux
 
-        rPairs = [round(random.random(), 1) for x in range(int(len(pInter)/2))]
-        crossPoint = [random.randint(1, 6) for x in range(int(len(pInter)/2))]
-        #crossPoint = random.sample(range(1, 6), int(len(pInter)/2))
+    def crossover(self, p, pc=0.6):
+        """crossover method, first algorithm to variate the population"""
 
-        #print(f"pInter bef: {pInter}")
+        #generating a probability value for each pair of individuals in population
+        rPairs = [round(random.random(), 1) for x in range(int(len(p)/2))]
+        #determining the point cross
+        crossPoint = [random.randint(1, 6) for x in range(int(len(p)/2))]
 
-        #print(rPairs)
-        #print(crossPoint)
-
-        for x in range(int(len(pInter)/2)):
+        for x in range(int(len(p)/2)):
             
             if rPairs[x] <= pc:
                 
+                #taking the index of pairs with crossover probabilities
                 p1 = x*2
                 p2 = (x*2)+1
                 
-                cromossome1 = pInter[p1][0]
-                cromossome2 = pInter[p2][0]
-                #print(cromossome1, cromossome2)
+                #storing their chromosomes
+                chromosome1 = p[p1][0]
+                chromosome2 = p[p2][0]
                  
-                cromoSlice1 = cromossome1[crossPoint[x]:]
-                cromoSlice2 = cromossome2[crossPoint[x]:]
-                #print(cromoSlice1, cromoSlice2)
+                #slicing the chromosomes from their crosspoints
+                cromoSlice1 = chromosome1[crossPoint[x]:]
+                cromoSlice2 = chromosome2[crossPoint[x]:]
                  
-                pInter[p1][0] = cromossome1.replace(cromossome1[crossPoint[x]:], cromoSlice2, 1)
-                pInter[p2][0] = cromossome2.replace(cromossome2[crossPoint[x]:], cromoSlice1, 1)
+                #replacing the chromosomes on their places
+                p[p1][0] = chromosome1.replace(chromosome1[crossPoint[x]:], cromoSlice2, 1)
+                p[p2][0] = chromosome2.replace(chromosome2[crossPoint[x]:], cromoSlice1, 1)
 
-        #print(f"pInter aft: {pInter}")
+        return p
 
-        return pInter
-
-    def mutByte(self, chromosome, rVal, pm):
-        
-        lVal = []
+    def mutBit(self, chromosome, rVal, pm):
+        """give a chromosome mutated to mutate method
+        when the random value is less than pm 'mutation probability'"""
         
         for x in range(7):
-                                             
             if rVal[x] <= pm:
                 
                 lChrom = list(chromosome)
                 lChrom[x] = str((int(chromosome[x])-1)**2)
                 chromosome = ''.join(lChrom)
-                #lVal.append(rVal[x])
                 
                 return chromosome
 
-    def mutate(self, pInter, pm=0.02):
+    def mutate(self, p, pm=0.02):
+        """matation method, second algorithm to variate the population"""
 
-        for x in range(len(pInter)):
+        for x in range(len(p)):
+            #generating a probability value for each bite
             rVal = [round(random.random(), 2) for x in range(7)]
-            chromosome = pInter[x][0]
-            #print(chromosome)
-            # #print(rVal)
-            
-            mutByte1 = GeneticAlgorithm().mutByte(chromosome, rVal, pm)
-            
-            #print(mutByte1)
+            #getting each individual chromosome of population
+            chromosome = p[x][0]
+            #instantiating a mutByte object
+            mutBit1 = GeneticAlgorithm().mutBit(chromosome, rVal, pm)
              
-            if (mutByte1 is not None):
-                pInter[x][0] = mutByte1
-                #print(pInter[x][0])
+            if (mutBit1 is not None):
+                #replacing chromosome when mutByte return a chromosome
+                p[x][0] = mutBit1
 
-        return pInter
+        return p
 
     def evalFunc(self, x):
-        """Evaluates the function"""
+        """Evaluates a given value"""
 
-        x = int(Encoder().grayToBin(x), 2)/100
-
-        y = (2**(-2*((x-0.1)/0.9)**2))*(math.sin(5*math.pi*x))**6
-
-        return x
-
-    def evalFuncy(self, x):
-        """Evaluates the function"""
-
+        #parse str to int when necessary
         if type(x) == str:
-            
             x = int(Encoder().grayToBin(x), 2)/100
 
         y = round((2**(-2*((x-0.1)/0.9)**2))*(math.sin(5*math.pi*x))**6, 2)
 
         return y
 
-    def funct(self):
+    def plotFunct(self):
         """Return 'ax', a the subplot function in the figure"""
         
-        values = []
-        points = []
-        
-        for each in np.arange(self.i, self.f, self.p):
-            test = GeneticAlgorithm().evalFuncy(each)
-            values.append(test)
-            
-        for each in np.arange(self.i, self.f, self.p):
-            points.append(each)
-            
+        #getting the x and y values
+        xVal = [val for val in np.arange(self.i, self.f, self.p)]
+        yVal = [GeneticAlgorithm().evalFunc(val) for val in np.arange(self.i, self.f, self.p)]
+
         fig, ax = plt.subplots()
-        ax.plot(points, values)
+        ax.plot(xVal, yVal)
+        #defining the axis space
         ax.axis([0, 1.1, 0, 1.1])
         
         return ax
 
     def addPointPlot(self, px, py):
-        """Return 'ax', a subplot with the function and a especific points"""
+        """Return 'ax', a subplot with the function with given points"""
         
-        ax = GeneticAlgorithm().funct()
+        ax = GeneticAlgorithm().plotFunct()
+        #giving x and y points
         ax.scatter(px, py, s=50)
         
         return ax
