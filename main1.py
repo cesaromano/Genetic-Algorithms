@@ -3,20 +3,15 @@ from GeneticAlgorithm1 import *
 
 #solution vector
 s = ['111101101111']
-
 #ideal fitness
 iFit = 12
-
 #Initialize a non repeated random population of n individuals
 n = 8
 ga = GeneticAlgorithm1(n)
 p = ga.randBitPopulation()
 print(f"first population: {p} \n")
 #ga.representate(p)
-#getting hamming distance
-#h = ga.hammingDist(p, s)
-#print(f"hamming distance: {h} \n")
-#getting hamming fit directly
+#getting hamming fit
 hf = ga.hammingFit(p, s, iFit)
 print(f"hamming fitness: {hf} \n")
 #stop criterion
@@ -26,7 +21,6 @@ t = 0
 #number of iterations
 ni = 170
 
-#while t < ni and sc < iFit:
 while t < ni and sc < iFit:
 
     #getting the max hamming fit value as a stop criterion

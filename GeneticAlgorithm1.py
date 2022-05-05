@@ -4,22 +4,16 @@ import numpy as np
 import cv2 as cv
 
 class GeneticAlgorithm1:
-    """Contains most of the methods that drive the main
+    """Contains most of the methods that drive the main1
     algorithm"""
 
-    def __init__(self, n=10, i=0.0, f=1.0, p=0.001):
-        """
-        n: number of individuals
-		i: range lower limit
-		f: range upper limit
-		p: range step
-		"""
-        self.i = i
-        self.f = f
-        self.p = p
+    def __init__(self, n=10):
+        
+        #n: number of individuals
         self.n = n
 
     def randBitPopulation(self):
+        """Generates a new population of n individuals"""
 
         bit = ('010101010101')
         p = [''.join(random.sample(bit, 12)) for ind in range(self.n)]
@@ -27,6 +21,7 @@ class GeneticAlgorithm1:
         return p
 
     def compBits(self, sInd, pInd):
+        """Help hammingDist comparing each vector with the solution vector"""
 
         counter = 0
 
@@ -37,18 +32,24 @@ class GeneticAlgorithm1:
         return counter
 
     def hammingDist(self, p, s):
+        """Calculates the hamming distance for each chromosome
+        """
 
         h = []
 
         for ind in range(len(p)):
+            #uses the compBits function to compare each vector with the solution vector
             h.append(GeneticAlgorithm1().compBits(s[0], p[ind]))
 
         return h
 
     def hammingFit(self, p, s, iFit):
+        """Fitness the population based on the hamming
+        distance measure and the desired measure"""
 
+        #getting each chromosome hamming distance
         h = GeneticAlgorithm1().hammingDist(p, s)
-
+        #diference betwen hamming hamming distance and ideal fitness measure
         hf = [iFit-h[hd] for hd in range(len(h))]
 
         return hf
@@ -151,13 +152,19 @@ class GeneticAlgorithm1:
         return p
 
     def representate(self, p):
+        """Representate as jpg image each chromosome"""
 
         for ind in range(len(p)):
+            #parse each chromosome string to list and then to np.array
             img = np.array(list(p[ind]), dtype='uint8')
+            #reshape each 1d vector to a 2d 4x3 size
             img = np.reshape(img, (4, 3))
+            #replacing 1 to 200 in order to get a constrasted image
             img = np.where(img==1, 200, img)
             height, width = img.shape[:2]
+            #amplifying the image using INTER_NEAREST mask
             img = cv.resize(img,(50*width, 50*height), interpolation = cv.INTER_NEAREST)
+            #showing the image
             cv.imwrite('example.jpg', img)
             cv.imshow(f'Image {1}', img)
             cv.waitKey(0)
