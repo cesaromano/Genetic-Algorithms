@@ -4,6 +4,7 @@ import math
 import random
 from encoder import Encoder
 import numpy as np
+import cv2 as cv
 
 class GeneticAlgorithm:
     """Contains most of the methods that drive the main
@@ -21,7 +22,7 @@ class GeneticAlgorithm:
         self.p = p
         self.n = n
 
-    def randPopulation(self):
+    def randGrayPopulation(self):
         """Creates a population, a list of ten
         lists of individuals, each individual chromosome is
         stored in the index 0"""

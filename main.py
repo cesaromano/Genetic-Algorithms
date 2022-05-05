@@ -3,9 +3,9 @@ from encoder import Encoder
 from GeneticAlgorithm import *
 
 #Initialize a non repeated random population of ten individuals, index 0:cromossome
-n = 10
+n = 8
 ga = GeneticAlgorithm(n)
-p = ga.randPopulation()
+p = ga.randGrayPopulation()
 
 #append fitness value to p index 1
 p = ga.fitness(p)
@@ -44,7 +44,7 @@ while t < 10:
     p = ga.mutate(p, pm)
 
     #adding the best of the generation to the next population
-    #p[0][0] = bChromosomeP
+    p[0][0] = bChromosomeP
 
     #append last fitness value to p index 1
     p = ga.fitness(p)
