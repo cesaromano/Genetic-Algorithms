@@ -165,7 +165,7 @@ class GeneticAlgorithm1:
             #amplifying the image using INTER_NEAREST mask
             img = cv.resize(img,(50*width, 50*height), interpolation = cv.INTER_NEAREST)
             #showing the image
-            cv.imwrite('example.jpg', img)
+            cv.imwrite(f'example{ind}.jpg', img)
             cv.imshow(f'Image {1}', img)
             cv.waitKey(0)
             cv.destroyAllWindows

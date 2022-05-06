@@ -1,15 +1,39 @@
-#hamming distance
-from GeneticAlgorithm import *
+from numpy import exp,arange
+from pylab import meshgrid,cm,imshow,contour,clabel,colorbar,axis,title,show
 
-n = 8
-ga = GeneticAlgorithm(n)
+def evalFunc(x, y):
+    return (1-x)**2 + 100*(y-(x**2))**2
 
-s = ['111101101111']
-p = ['101001010101', '101011001001', '111010100100', '010100101011', '011101000110', '011001101100', '110010110100', '110000111010']
+#x = arange(-10.0, 10.1, 0.1)
+#y = arange(-10.0, 10.1, 0.1)
 
-h = ga.hammingDist(p, s)
-print(h)
+x = arange(-10, 10, 1)
+y = arange(-10, 10, 1)
+X, Y = meshgrid(x, y) # grid of point
+Z = evalFunc(X, Y) # evaluation of the function on the grid
+print(Z)
 
-hf = ga.hammingFit(p, s)
+im = imshow(Z,cmap=cm.RdBu) # drawing the function
+colorbar(im) # adding the colobar on the right
 
-print(hf)
+show()
+
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
+import matplotlib.pyplot as plt
+from numpy import sin,sqrt
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, 
+cmap=cm.RdBu,linewidth=0, antialiased=False)
+
+ax.zaxis.set_major_locator(LinearLocator(10))
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+
+fig.colorbar(surf, shrink=0.5, aspect=5)
+
+ax.scatter(0, 0, 0, s=100)
+
+plt.show

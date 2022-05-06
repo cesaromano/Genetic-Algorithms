@@ -3,7 +3,7 @@ from encoder import Encoder
 from GeneticAlgorithm import *
 
 #Initialize a non repeated random population of ten individuals, index 0:cromossome
-n = 8
+n = 10
 ga = GeneticAlgorithm(n)
 p = ga.randGrayPopulation()
 
@@ -12,9 +12,12 @@ p = ga.fitness(p)
 #best chromosome population value
 bChromosomeP = '0000000'
 #counter
-t = 1
+t = 0
+ni = 50
 
-while t < 10:
+metric = []
+
+while t < ni:
 
     #getting the best individual of the generation
     bChromosome = ga.best(p)
@@ -27,15 +30,15 @@ while t < 10:
     p = ga.linRank(p)
 
     #Roulete wheel selection
-    p = ga.rouleteWheelSel(p)
+    #p = ga.rouleteWheelSel(p)
 
     #Tournament selection, rn: number of random individuals per tournament
-    rn = 5
-    #p = ga.tournSelec(p, rn)
+    rn = 9
+    p = ga.tournSelec(p, rn)
     #print(f"tournament selection: {p} \n")
 
     #crossover, probability crossover must be betwen 0.6 < pc < 1.0
-    pc = 0.6
+    pc = 0.9
     p = ga.crossover(p, pc)
     #print(f"crossover: {p} \n")
 
@@ -56,8 +59,27 @@ while t < 10:
     ycoordinates = [ga.evalFunc(xcoordinates[x]) for x in range(len(p))]
     print(f"y coordinates: {ycoordinates} \n")
 
-    ga.addPointPlot(xcoordinates, ycoordinates)
+    metric.append(sum(ycoordinates)/len(ycoordinates))
 
-    plt.show()
+
+
+    #ga.addPointPlot(xcoordinates, ycoordinates)
+
+    #plt.show()
 
     t += 1
+
+xVal = [val for val in range(ni)]
+yVal = metric
+
+fig, ax = plt.subplots()
+ax.plot(xVal, yVal, label="Mean fitness")
+#defining the axis space
+ax.axis([0, ni, 0, 1.0])
+
+ax.legend(shadow=True, fancybox=True)
+plt.title(f"Not Best Included pc={pc}, pm={pm}, p={n}, ri={rn}")
+plt.xlabel("Generation")
+plt.ylabel("f(x)")
+
+plt.show()
