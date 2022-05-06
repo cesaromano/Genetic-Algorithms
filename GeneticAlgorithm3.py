@@ -44,7 +44,7 @@ class GeneticAlgorithm3:
         elif coordinate[0] == '1':
             return int(Encoder3().grayToBin(coordinate[1:]), 2)
         elif coordinate[0] == '0':
-            return (int(Encoder3().grayToBin(coordinate[1:]), 2))*-1
+            return -1*(int(Encoder3().grayToBin(coordinate[1:]), 2))
 
     def randGrayPopulation(self):
 
